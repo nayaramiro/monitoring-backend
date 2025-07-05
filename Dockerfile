@@ -1,20 +1,22 @@
-# Utilise l'image officielle Node.js (version 18 par exemple)
-FROM node:18
+# Utiliser l’image PHP avec Apache
+FROM php:8.1-apache
 
-# Crée et place dans le dossier /app
-WORKDIR /app
+# Installer les dépendances pour SQLite
+RUN apt-get update && apt-get install -y libsqlite3-dev \
+    && docker-php-ext-install pdo_sqlite
 
-# Copie package.json et package-lock.json (si tu as)
-COPY package*.json ./
+# Copier api.php à la racine web pour qu’il soit accessible par l’URL /api.php
+COPY scripts/api.php /var/www/html/api.php
 
-# Installe les dépendances
-RUN npm install
+# Copier la base de données SQLite dans un dossier db accessible
+COPY db/dashboard.sqlite /var/www/html/db/dashboard.sqlite
 
-# Copie le reste des fichiers (index.js, scripts, db, etc.)
-COPY . .
+# (Optionnel) Copier d’autres scripts si nécessaires
+COPY scripts/create_db.php /var/www/html/create_db.php
+COPY scripts/test_api.php /var/www/html/test_api.php
 
-# Expose le port sur lequel ton app tourne (par défaut 3000 ou autre)
-EXPOSE 8080
+# Exposer le port 80 (HTTP)
+EXPOSE 80
 
-# Commande pour lancer ton serveur Node.js
-CMD ["node", "index.js"]
+# Lancement d’Apache en mode foreground (par défaut dans cette image)
+CMD ["apache2-foreground"]
