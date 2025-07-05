@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-$dbPath = __DIR__ . '/../../db/dashboard.sqlite';
+$dbPath = __DIR__ . '/db/dashboard.sqlite';
 
 try {
     $pdo = new PDO("sqlite:" . $dbPath);
@@ -21,3 +21,12 @@ try {
         'error' => $e->getMessage(),
     ]);
 }
+
+if (!file_exists($dbPath)) {
+    echo json_encode([
+        'success' => false,
+        'error' => "Fichier de base de données non trouvé à : $dbPath"
+    ]);
+    exit;
+}
+
