@@ -1,7 +1,7 @@
 <?php
 // insert_test_data.php
 
-$dbPath = __DIR__ . '/../../db/dashboard.sqlite';
+$dbPath = __DIR__ . '/db/dashboard.sqlite';
 
 try {
     $pdo = new PDO("sqlite:" . $dbPath);
