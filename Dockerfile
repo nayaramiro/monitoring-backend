@@ -16,7 +16,7 @@ COPY scripts/create_db.php /var/www/html/create_db.php
 COPY scripts/test_api.php /var/www/html/test_api.php
 
 # Exposer le port 80 (HTTP)
-EXPOSE 80
+EXPOSE 8080
 
 # Lancement d’Apache en mode foreground (par défaut dans cette image)
 CMD ["apache2-foreground"]

@@ -1,14 +1,8 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 $dbPath = __DIR__ . '/../../db/dashboard.sqlite';
-
-echo json_encode([
-    'path' => $dbPath,
-    'exists' => file_exists($dbPath),
-    'is_writable' => is_writable(dirname($dbPath)),
-    'is_readable' => is_readable($dbPath),
-]);
 
 try {
     $pdo = new PDO("sqlite:" . $dbPath);
