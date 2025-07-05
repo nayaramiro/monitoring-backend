@@ -1,16 +1,17 @@
 FROM php:8.1-apache
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# Installer sqlite et pdo_sqlite
-RUN apt-get update && apt-get install -y libsqlite3-dev sqlite3 \
+RUN apt-get update && apt-get install -y libsqlite3-dev \
     && docker-php-ext-install pdo_sqlite
 
-# Copier le code backend dans le dossier Apache
+# Modifier Apache pour écouter le port via variable d'environnement PORT
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+ENV PORT 8080
+
+RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
+
+EXPOSE 8080
+
 COPY . /var/www/html/
 
-# Donner les bonnes permissions sur la base SQLite
-RUN chown -R www-data:www-data /var/www/html/db \
-    && chmod -R 755 /var/www/html/db
-
-EXPOSE 80
+CMD ["apache2-foreground"]
