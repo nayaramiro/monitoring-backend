@@ -1,17 +1,20 @@
-FROM php:8.1-apache
+# Utilise l'image officielle Node.js (version 18 par exemple)
+FROM node:18
 
-RUN apt-get update && apt-get install -y libsqlite3-dev \
-    && docker-php-ext-install pdo_sqlite
+# Crée et place dans le dossier /app
+WORKDIR /app
 
-# Modifier Apache pour écouter le port via variable d'environnement PORT
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# Copie package.json et package-lock.json (si tu as)
+COPY package*.json ./
 
-ENV PORT 8080
+# Installe les dépendances
+RUN npm install
 
-RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
+# Copie le reste des fichiers (index.js, scripts, db, etc.)
+COPY . .
 
+# Expose le port sur lequel ton app tourne (par défaut 3000 ou autre)
 EXPOSE 8080
 
-COPY . /var/www/html/
-
-CMD ["apache2-foreground"]
+# Commande pour lancer ton serveur Node.js
+CMD ["node", "index.js"]
